@@ -1,0 +1,54 @@
+doctype html
+//if lt IE 7
+html.no-js.lt-ie9.lt-ie8.lt-ie7(lang='en')
+//if IE 7
+html.no-js.lt-ie9.lt-ie8(lang='en')
+//if IE 8
+html.no-js.lt-ie9(lang='en')
+//if gt IE 8
+html.no-js(lang='en')
+  head
+    title=title
+    meta(name='charset', content='utf-8')
+    meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+    meta(name='viewport', content='width=device-width')
+    link(rel='stylesheet/less', type='text/css', href='assets/css/site.less')
+    link(rel="apple-touch-icon-precomposed", sizes="144x144", href='assets/ico/apple-touch-icon-144-precomposed.png')
+    link(rel="apple-touch-icon-precomposed", sizes="114x114", href='assets/ico/apple-touch-icon-114-precomposed.png')
+    link(rel="apple-touch-icon-precomposed", sizes="72x72", href='assets/ico/apple-touch-icon-72-precomposed.png')
+    link(rel="apple-touch-icon-precomposed", href='assets/ico/apple-touch-icon-57-precomposed.png')
+    script(src='js/vendor/less-1.3.0.min.js')
+    script(src='js/vendor/modernizr-2.5.3.min.js')
+    script(data-main="js/main", src='js/vendor/require.js')
+  body
+    //if ltw IE 7
+        p.chromeframe.
+          Your browser is <em>ancient!</em>
+          <a href="http://browsehappy.com/">Upgrade to a different browser</a> or
+          <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a>
+          to experience this site.
+
+    div.navbar.navbar-fixed-top
+      div.navbar-inner
+        div.container
+          a.btn.btn-navbar(data-toggle='collapse', data-target='.nav-collapse')
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.brand(href='/') Node Express App
+          div.nav-collapse
+            ul.nav
+              li.active
+                 a(href='/home') Home
+              li
+                 a(href='/login') Login
+              li
+                 a(href='/register') Register
+    div#main
+      block content
+
+    script
+      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));
