@@ -38,10 +38,12 @@ html.no-js(lang='en')
           a.brand(href='/') Node Express App
           div.nav-collapse
             ul.nav
+              li.active
+                 a(href='/home') Home
               li
-                 a(href='/login') Login
+                 a(href='/users') Users
               li
-                 a(href='/register') Register
+                 a(href='/logout') Logout
     div#main
       block content
 
