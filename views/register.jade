@@ -1,14 +1,11 @@
-extends layout
-
-block content
-  div.box.register
-    h2 Register For An Account
-    form(method='post', url='/register')
-      div
-        input(type='text', name='email', placeholder='Email Address')
-      div
-        input(type='password', name='password', placeholder='Password')
-      div
-        input(type='password', name='password-confirm', placeholder='Password Confirm')
-      div
-        input(type='submit', value='Register')
+div.box.register
+  h2 Register For An Account
+  form(method='post', url='/register')
+    div
+      input(type='text', name='email', placeholder='Email Address')
+    div
+      input(type='password', name='password', placeholder='Password')
+    div
+      input(type='password', name='password-confirm', placeholder='Password Confirm')
+    div
+      input(type='submit', value='Register')

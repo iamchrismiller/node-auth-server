@@ -1,90 +1,65 @@
-var nohm = require('nohm').Nohm,
-  userModel = require('../lib/models/user.js'),
-  redis = require('redis'),
-  redisClient = redis.createClient();
-
-
-redisClient.on("connect", function () {
-  console.log("RedisClient Connected ");
-  nohm.setClient(redisClient);
-});
-
-redisClient.on("error", function (err) {
-  console.log("RedisClient Error " + err);
-});
-
-isLoggedIn = function (session) {
-  return (session.auth) ? true : false;
-};
+var Nohm = require('nohm').Nohm
+  , userModel = require('../lib/models/user.js')
+  ;
 
 exports.index = function (req, res) {
-  if (isLoggedIn(req.session)) {
-    res.redirect('/home');
-  } else {
-    res.render('index.jade', {
-      title : 'Hello World'
-    });
-  }
+  res.render('index', {
+    title : 'Hello World'
+  });
 };
 
 exports.login = {
   get : function (req, res) {
-    if (isLoggedIn(req.session)) {
-      res.redirect('/home');
-    } else {
-      res.render('login.jade', {
-        title : 'Login'
-      });
-    }
+    res.render('login', {
+      title : 'Login'
+    });
   },
 
   post : function (req, res) {
-    var email = req.body.email,
-      password = req.body.password,
-      user = nohm.factory('User');
+    var email = req.body.email
+      , password = req.body.password
+      , user = Nohm.factory('User')
+      ;
 
     user.login(email, password, function (success) {
       if (success) {
-        req.session.auth = true;
+        req.session.authenticated = true;
         req.session.user = user.allProperties();
         res.redirect('/home');
       } else {
-        //Need to get this working?
-        res.render('login.jade', { title : 'Login', err : "Invalid Email Or Password" })
+        console.log('Authentication failure');
+        res.render('login', { title : 'Login', err : "Invalid Email Or Password" });
       }
     });
   }
 };
 
 exports.logout = function (req, res) {
-  if (req.session.auth) req.session.destroy();
+  req.session.destroy();
   res.redirect('/');
 };
 
 exports.register = {
   get : function (req, res) {
-    if (isLoggedIn(req.session)) {
-      res.redirect('/home');
-    } else {
-      res.render('register.jade', {
-        title : 'Register'
-      });
-    }
+    res.render('register', {
+      title : 'Register'
+    });
   },
 
   post : function (req, res) {
-    var user = nohm.factory('User');
+    var user = Nohm.factory('User');
     user.p('email', req.param('email'));
     user.p('password', req.param('password'));
 
-    console.log("ABOUT TO SAVE");
     user.save(function (err) {
-      if (err === 'invalid') {
-        console.log('user properties were invalid: ', user.errors);
-      } else if (err) {
-        console.log("ENCOUNTERED ERROR "+ err );
+      if (err) {
+        console.log('Error registering : %s', err);
+        res.render('register', {
+          title : 'Register',
+          err   : 'Error registering'
+        });
       } else {
-        req.session.auth = true;
+        req.session.authenticated = true;
         req.session.user = user.allProperties();
         res.redirect('/home');
       }
@@ -93,23 +68,21 @@ exports.register = {
 };
 
 exports.home = function (req, res) {
-  if (isLoggedIn(req.session)) {
-    res.render('home.jade', {
-      title : 'Home'
-    });
-  } else {
-    res.redirect('/login');
-  }
+  res.render('home', {
+    title : 'Home'
+  });
 };
 
 exports.users = {
   get : function (req, res) {
-    if (isLoggedIn(req.session)) {
-      res.render('users.jade', {
-        title : 'User List'
-      });
-    } else {
-      res.redirect('/login');
-    }
+    res.render('users', {
+      title : 'User List'
+    });
   }
 };
+
+exports.notFound = function(req, res) {
+  res.render('error/404', {
+    title : 'Not found 404'
+  });
+}
