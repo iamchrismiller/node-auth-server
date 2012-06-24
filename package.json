@@ -9,9 +9,12 @@
     , "connect-redis" : "1.4.x"
     , "less" : "1.3.x"
     , "less-middleware" : "*"
-    , "nohm"          : "0.9.x"
-    , "redis"         : "0.7.x"
-    , "hiredis"       : "0.1.x"
-    , "jade"          : "0.26.x"
+    , "nohm"           : "0.9.x"
+    , "redis"          : "0.7.x"
+    , "hiredis"        : "0.1.x"
+    , "jade"           : "0.26.x"
+    , "passport"       : "0.1.x"
+    , "passport-oauth" : "*"
+    , "passport-local" : "*"
   }
 }
