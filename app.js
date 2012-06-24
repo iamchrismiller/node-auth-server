@@ -6,6 +6,7 @@ var express = require('express')
   , SessionStore = require('connect-redis')(express)
   , routes = require('./routes')
   , Nohm = require('nohm').Nohm
+  , less = require('less-middleware')
   , redis = require('redis')
   ;
 
@@ -27,13 +28,13 @@ redisClient.on("connect", function () {
 app.configure(function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
-  app.set('view options', { layout : false });
+  app.set('view options', { layout : true });
   app.use(express.bodyParser());
   app.use(express.cookieParser('secret'));
-  app.use(express.static(__dirname + '/public'));
   app.use(express.session({ secret : 'secret', store : new SessionStore() }));
   app.use(express.methodOverride());
-  app.use(express.compiler({ src : __dirname + '/public', enable : ['less'] }));
+  app.use(less({src: __dirname + '/public', force : true}));
+  app.use(express.static(__dirname + '/public'));
 });
 
 app.configure('development', function () {
@@ -49,6 +50,11 @@ app.configure('production', function () {
   app.use(express.errorHandler());
 });
 
+app.dynamicHelpers({
+  session: function (req, res) {
+    return req.session;
+  }
+});
 
 // Authentication handler
 
@@ -59,18 +65,18 @@ function auth(req,res,next) {
 
 function noauth(req,res,next) {
   if (!req.session.authenticated) return next();
-  res.redirect('/');
+  res.redirect('/home');
 }
-
 
 // Routes
 
-app.get(  '/',          routes.index);
 app.get(  '/logout',    routes.logout);
-app.get(  '/login',     routes.login.get);
-app.post( '/login',     routes.login.post);
-app.get(  '/register',  routes.register.get);
-app.post( '/register',  routes.register.post);
+
+app.get(  '/',          noauth, routes.index);
+app.get(  '/login',     noauth, routes.login.get);
+app.post( '/login',     noauth, routes.login.post);
+app.get(  '/register',  noauth, routes.register.get);
+app.post( '/register',  noauth, routes.register.post);
 
 app.get('/home',  auth, routes.home);
 app.get('/users', auth, routes.users.get);
