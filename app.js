@@ -4,7 +4,7 @@
 
 var express = require('express')
   , SessionStore = require('connect-redis')(express)
-//  , passport = require('passport')
+  , passport = require('passport')
   , routes = require('./routes');
 
 var app = module.exports = express.createServer();
@@ -14,9 +14,9 @@ app.configure(function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('view options', { layout : false });
-  app.use(express.cookieParser('secret'));
+  app.use(express.cookieParser('SALT'));
   app.use(express.static(__dirname + '/public'));
-  app.use(express.session({ secret : 'secret', store : new SessionStore() }));
+  app.use(express.session({ secret : 'SALT', store : new SessionStore() }));
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.compiler({ src : __dirname + '/public', enable : ['less'] }));
@@ -27,6 +27,8 @@ app.configure(function () {
   // http://passportjs.org/guide/oauth.html
   // app.use(passport.initialize());
   // app.use(passport.session());
+
+
 });
 
 app.configure('development', function () {
