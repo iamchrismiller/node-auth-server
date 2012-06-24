@@ -81,12 +81,10 @@ app.get('/', noauth, routes.index);
 app.get('/login', noauth, routes.login.get);
 
 app.post('/login', noauth, passport.authenticate('local',
-  { failureRedirect: '/login',
+  { successRedirect: '/home',
+    failureRedirect: '/login',
     failureFlash: true
-  }),
-  function(req, res) {
-    res.redirect('/home');
-  }
+  })
 );
 
 app.get(  '/register',  noauth, routes.register.get);

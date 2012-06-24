@@ -20,7 +20,7 @@ exports.login = {
 };
 
 exports.logout = function (req, res) {
-  req.session.destroy();
+  req.logOut();
   res.redirect('/');
 };
 
@@ -31,27 +31,29 @@ exports.register = {
     });
   },
 
-  post : function (req, res) {
-    var user = Nohm.factory('User'),
-      email = req.param('email'),
-      password = req.param('password');
-    user.p('email', email);
-    user.p('password', password);
+  post : function (req, res, next) {
+    var user = Nohm.factory('User');
+
+    user.p('email', req.param('email'));
+    user.p('password', req.param('password'));
 
     user.save(function (err) {
       if (err) {
-        console.log('Error registering : %s', err);
+        console.log('Error registering : %s', user.errors);
         res.render('register', {
           title : 'Register',
-          err   : 'Error registering'
+          err   : user.errors
         });
       } else {
-
-        // Currently Redirecting to login, need to add another passport authentication method
-        // Which will bypass the user lookup since we created the account. needing to store
-        // the user data in the passport object
-
-        res.redirect('/login');
+          //Authenticate the current session if registration succeeds
+          passport.authenticate('newUser', function(err, user, info) {
+            if (err) return next(err);
+            if (!user) return res.redirect('/login');
+            req.logIn(user, function(err) {
+              if (err) return next(err);
+              return res.redirect('/home');
+            });
+          })(req, res, next);
       }
     });
   }

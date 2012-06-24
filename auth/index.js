@@ -3,6 +3,19 @@ var passport = require('passport')
   , Nohm = require('nohm').Nohm
   ;
 
+//New User Load Into Session
+passport.use('newUser', new LocalStrategy({
+    usernameField: 'email'
+  },
+  function(email, password, done) {
+    var user = Nohm.factory('User');
+    user.getByEmail(email, function(err, userRecord) {
+      if (err) return done(null, false, { message :  err });
+      return done(null,userRecord);
+    });
+  }
+));
+
 passport.use(new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
