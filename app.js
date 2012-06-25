@@ -41,6 +41,8 @@ app.configure(function () {
 
   app.use(passport.initialize());
   app.use(passport.session());
+
+  app.use(express.compress());
 });
 
 app.configure('development', function () {
