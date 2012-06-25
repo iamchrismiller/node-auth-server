@@ -1,5 +1,7 @@
 var Nohm = require('nohm').Nohm
   , userModel = require('../lib/models/user.js')
+  , passport = require('passport')
+  , auth = require('./../auth')
   ;
 
 exports.index = function (req, res) {
@@ -11,31 +13,14 @@ exports.index = function (req, res) {
 exports.login = {
   get : function (req, res) {
     res.render('login', {
-      title : 'Login'
-    });
-  },
-
-  post : function (req, res) {
-    var email = req.body.email
-      , password = req.body.password
-      , user = Nohm.factory('User')
-      ;
-
-    user.login(email, password, function (success) {
-      if (success) {
-        req.session.authenticated = true;
-        req.session.user = user.allProperties();
-        res.redirect('/home');
-      } else {
-        console.log('Authentication failure');
-        res.render('login', { title : 'Login', err : "Invalid Email Or Password" });
-      }
+      title : 'Login',
+      message: req.flash('error')
     });
   }
 };
 
 exports.logout = function (req, res) {
-  req.session.destroy();
+  req.logOut();
   res.redirect('/');
 };
 
@@ -46,22 +31,29 @@ exports.register = {
     });
   },
 
-  post : function (req, res) {
+  post : function (req, res, next) {
     var user = Nohm.factory('User');
+
     user.p('email', req.param('email'));
     user.p('password', req.param('password'));
 
     user.save(function (err) {
       if (err) {
-        console.log('Error registering : %s', err);
+        console.log('Error registering : %s', user.errors);
         res.render('register', {
           title : 'Register',
-          err   : 'Error registering'
+          err   : user.errors
         });
       } else {
-        req.session.authenticated = true;
-        req.session.user = user.allProperties();
-        res.redirect('/home');
+          //Authenticate the current session if registration succeeds
+          passport.authenticate('newUser', function(err, user, info) {
+            if (err) return next(err);
+            if (!user) return res.redirect('/login');
+            req.logIn(user, function(err) {
+              if (err) return next(err);
+              return res.redirect('/home');
+            });
+          })(req, res, next);
       }
     });
   }
@@ -85,4 +77,4 @@ exports.notFound = function(req, res) {
   res.render('error/404', {
     title : 'Not found 404'
   });
-}
+};

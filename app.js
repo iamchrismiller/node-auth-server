@@ -8,6 +8,8 @@ var express = require('express')
   , Nohm = require('nohm').Nohm
   , lessMiddleware = require('less-middleware')
   , redis = require('redis')
+  , authConfig = require('./auth')
+  , passport = require('passport')
   ;
 
 var app = module.exports = express.createServer()
@@ -17,14 +19,13 @@ var app = module.exports = express.createServer()
 // Setup Nohm with our redis connection
 
 redisClient.on("connect", function () {
-  console.log("Connected to redis")
+  console.log("Connected to redis");
   Nohm.setClient(redisClient);
 }).on("error", function (err) {
   console.log("RedisClient Error " + err);
 });
 
 // Configuration
-
 app.configure(function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
@@ -35,6 +36,11 @@ app.configure(function () {
   app.use(express.methodOverride());
   app.use(lessMiddleware({src: __dirname + '/public', force : true}));
   app.use(express.static(__dirname + '/public'));
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.use(app.router);
 });
 
 app.configure('development', function () {
@@ -59,22 +65,28 @@ app.dynamicHelpers({
 // Authentication handler
 
 function auth(req,res,next) {
-  if (req.session.authenticated) return next();
+  if (req.isAuthenticated()) { return next(); }
   res.redirect('/login');
 }
 
 function noauth(req,res,next) {
-  if (!req.session.authenticated) return next();
+  if (!req.isAuthenticated()) { return next(); }
   res.redirect('/home');
 }
 
 // Routes
+app.get('/logout', routes.logout);
 
-app.get(  '/logout',    routes.logout);
+app.get('/', noauth, routes.index);
+app.get('/login', noauth, routes.login.get);
 
-app.get(  '/',          noauth, routes.index);
-app.get(  '/login',     noauth, routes.login.get);
-app.post( '/login',     noauth, routes.login.post);
+app.post('/login', noauth, passport.authenticate('local',
+  { successRedirect: '/home',
+    failureRedirect: '/login',
+    failureFlash: true
+  })
+);
+
 app.get(  '/register',  noauth, routes.register.get);
 app.post( '/register',  noauth, routes.register.post);
 
