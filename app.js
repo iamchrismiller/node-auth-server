@@ -8,8 +8,7 @@ var express = require('express')
   , Nohm = require('nohm').Nohm
   , lessMiddleware = require('less-middleware')
   , redis = require('redis')
-  , authConfig = require('./lib/auth')
-  , passport = require('passport')
+  , passport = require('./lib/auth')
   ;
 
 var app = module.exports = express.createServer()
