@@ -1,7 +1,7 @@
 var Nohm = require('nohm').Nohm
   , userModel = require('../lib/models/user.js')
   , passport = require('passport')
-  , auth = require('./../auth')
+  , auth = require('../lib/auth')
   ;
 
 exports.index = function (req, res) {
@@ -63,14 +63,6 @@ exports.home = function (req, res) {
   res.render('home', {
     title : 'Home'
   });
-};
-
-exports.users = {
-  get : function (req, res) {
-    res.render('users', {
-      title : 'User List'
-    });
-  }
 };
 
 exports.notFound = function(req, res) {

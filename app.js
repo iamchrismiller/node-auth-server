@@ -8,7 +8,7 @@ var express = require('express')
   , Nohm = require('nohm').Nohm
   , lessMiddleware = require('less-middleware')
   , redis = require('redis')
-  , authConfig = require('./auth')
+  , authConfig = require('./lib/auth')
   , passport = require('passport')
   ;
 
@@ -91,7 +91,6 @@ app.get(  '/register',  noauth, routes.register.get);
 app.post( '/register',  noauth, routes.register.post);
 
 app.get('/home',  auth, routes.home);
-app.get('/users', auth, routes.users.get);
 
 app.all('/*', routes.notFound);
 

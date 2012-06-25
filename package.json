@@ -14,7 +14,6 @@
     , "hiredis"        : "0.1.x"
     , "jade"           : "0.26.x"
     , "passport"       : "0.1.x"
-    , "passport-oauth" : "*"
     , "passport-local" : "*"
   }
 }
