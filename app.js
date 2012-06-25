@@ -6,7 +6,7 @@ var express = require('express')
   , SessionStore = require('connect-redis')(express)
   , routes = require('./routes')
   , Nohm = require('nohm').Nohm
-  , less = require('less-middleware')
+  , lessMiddleware = require('less-middleware')
   , redis = require('redis')
   ;
 
@@ -33,7 +33,7 @@ app.configure(function () {
   app.use(express.cookieParser('secret'));
   app.use(express.session({ secret : 'secret', store : new SessionStore() }));
   app.use(express.methodOverride());
-  app.use(less({src: __dirname + '/public', force : true}));
+  app.use(lessMiddleware({src: __dirname + '/public', force : true}));
   app.use(express.static(__dirname + '/public'));
 });
 
