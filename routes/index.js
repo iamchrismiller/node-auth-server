@@ -1,7 +1,6 @@
 var Nohm = require('nohm').Nohm
   , userModel = require('../lib/models/user.js')
   , passport = require('passport')
-  , auth = require('../lib/auth')
   ;
 
 exports.index = function (req, res) {
