@@ -16,7 +16,12 @@ exports.login = {
       title : 'Login',
       message: req.flash('error')
     });
-  }
+  },
+  post : passport.authenticate('local', {
+    successRedirect: '/home',
+    failureRedirect: '/login',
+    failureFlash: true
+  })
 };
 
 exports.logout = function (req, res) {
