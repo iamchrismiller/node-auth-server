@@ -30,17 +30,17 @@ app.configure(function () {
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.set('view options', { layout : true });
+
   app.use(express.bodyParser());
   app.use(express.cookieParser('secret'));
   app.use(express.session({ secret : 'secret', store : new SessionStore() }));
   app.use(express.methodOverride());
+
   app.use(lessMiddleware({src: __dirname + '/public', force : true}));
   app.use(express.static(__dirname + '/public'));
 
   app.use(passport.initialize());
   app.use(passport.session());
-
-  app.use(app.router);
 });
 
 app.configure('development', function () {
@@ -78,14 +78,9 @@ function noauth(req,res,next) {
 app.get('/logout', routes.logout);
 
 app.get('/', noauth, routes.index);
-app.get('/login', noauth, routes.login.get);
 
-app.post('/login', noauth, passport.authenticate('local',
-  { successRedirect: '/home',
-    failureRedirect: '/login',
-    failureFlash: true
-  })
-);
+app.get('/login', noauth, routes.login.get);
+app.post('/login', noauth, routes.login.post);
 
 app.get(  '/register',  noauth, routes.register.get);
 app.post( '/register',  noauth, routes.register.post);
