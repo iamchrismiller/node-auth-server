@@ -1,5 +1,9 @@
 div.box.login
   p Login To Your Account
+
+  - if (typeof(err) != 'undefined' && err.length > 0)
+   div.error= err
+
   form(method='post', action='/login')
     div
       input(type='text', name='email', placeholder='Email Address')

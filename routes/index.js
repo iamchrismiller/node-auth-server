@@ -1,6 +1,7 @@
 var Nohm = require('nohm').Nohm
   , userModel = require('../lib/models/user.js')
   , passport = require('passport')
+  , util = require('util')
   ;
 
 exports.index = function (req, res) {
@@ -11,16 +12,19 @@ exports.index = function (req, res) {
 
 exports.login = {
   get : function (req, res) {
+
     res.render('login', {
       title : 'Login',
-      message: req.flash('error')
+      err: req.flash('error')
     });
   },
+
   post : passport.authenticate('local', {
-    successRedirect: '/home',
-    failureRedirect: '/login',
+    successRedirect : '/home',
+    failureRedirect : '/login',
     failureFlash: true
   })
+
 };
 
 exports.logout = function (req, res) {
@@ -43,10 +47,11 @@ exports.register = {
 
     user.save(function (err) {
       if (err) {
-        console.log('Error registering : %s', user.errors);
+        //build an error parser for errors in user.errors for more granular errors
+        console.log('Error registering : %s', util.inspect(user.errors));
         res.render('register', {
           title : 'Register',
-          err   : user.errors
+          err   : 'Looks like Your Form Data Was Invalid, Try Again'
         });
       } else {
           //Authenticate the current session if registration succeeds

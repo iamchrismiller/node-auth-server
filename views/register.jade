@@ -1,5 +1,9 @@
 div.box.register
   h2 Register For An Account
+
+  - if (typeof(err) != 'undefined' && err.length > 0)
+   div.error= err
+
   form(method='post', url='/register')
     div
       input(type='text', name='email', placeholder='Email Address')

@@ -4183,6 +4183,17 @@ a.badge:hover {
   padding: 20px 20px;
   width: 500px;
 }
+#main .box .error {
+  padding: 5px;
+  background-color: #ff0000;
+  color: #ffffff;
+  width: 70%;
+  margin: 5px auto;
+}
+#main .box.login .error {
+  width: 95%;
+  margin: 5px 0px;
+}
 #main .box.register {
   text-align: center;
 }

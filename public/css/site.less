@@ -1,12 +1,27 @@
 @import "bootstrap/bootstrap.less";
 
 #main {
+
   .box {
+    .error {
+      padding: 5px;
+      background-color: #ff0000;
+      color: #ffffff;
+      width: 70%;
+      margin: 5px auto;
+    }
     .center-block;
     margin-top : 10px;
     border     : 10px solid #E6E6E6;
     padding    : 20px 20px;
     width      : 500px;
+
+    &.login {
+      .error {
+        width: 95%;
+        margin: 5px 0px;
+      }
+    }
 
     &.register {
       text-align : center;
